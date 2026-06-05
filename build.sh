@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # ========================================================================
-# [PROJECT NAME] Docker Image Build Script
+# CoreX Docker Image Build Script
 # ========================================================================
 
 
 set -e
 
-IMAGE_NAME=""
+IMAGE_NAME="zephyr-dev"
 DOCKER_DIR="docker"
 
 docker build -t $IMAGE_NAME \

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ========================================================================
-# [PROJECT NAME] Docker Image Build Script
+# CoreX Development Zephyr Docker Image Build Script
 # ========================================================================
 
 # This script opens a new terminal with two tabs for the container
@@ -14,11 +14,11 @@
 
 set -e
 
-IMAGE_NAME=""
-CONTAINER_NAME=""
-WORKSPACE_DIR=""
+IMAGE_NAME="zephyr-dev"
+CONTAINER_NAME="corex-zephyr-dev"
+WORKSPACE_DIR="zephyr_ws"
 WORKSPACE_PATH="$PWD/$WORKSPACE_DIR"
-USER_NAME=""
+USER_NAME="jmendes"
 
 if [ "$(docker ps -q -f name=^/${CONTAINER_NAME}$)" ]; then
     echo "Container ${CONTAINER_NAME} is already running."
@@ -40,8 +40,7 @@ sleep 0.1
 xdotool type "docker exec -it corex-zephyr-dev bash -c 'cd /home/$USER_NAME/zephyr_ws; exec bash'"
 xdotool key Return
 
-# Add as many terminal windows as the project requires
-# xdotool key ctrl+shift+e
-# sleep 0.1
-# xdotool type "docker exec -it corex-zephyr-dev bash -c 'cd /home/$USER_NAME/zephyr_ws; exec bash'"
-# xdotool key Return
+xdotool key ctrl+shift+e
+sleep 0.1
+xdotool type "docker exec -it corex-zephyr-dev bash -c 'cd /home/$USER_NAME/zephyr_ws; exec bash'"
+xdotool key Return
