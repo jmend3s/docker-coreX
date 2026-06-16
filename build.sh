@@ -7,7 +7,7 @@
 
 set -e
 
-IMAGE_NAME="zephyr-dev"
+IMAGE_NAME="corekit-dev"
 DOCKER_DIR="docker"
 
 docker build -t $IMAGE_NAME \

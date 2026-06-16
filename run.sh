@@ -14,7 +14,7 @@
 
 set -e
 
-IMAGE_NAME="zephyr-dev"
+IMAGE_NAME="corekit-dev"
 CONTAINER_NAME="corex-zephyr-dev"
 WORKSPACE_DIR="zephyr_ws"
 WORKSPACE_PATH="$PWD/$WORKSPACE_DIR"
