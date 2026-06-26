@@ -15,10 +15,14 @@ USER="jmendes"
 ZEPHYR_HEX="/home/$USER/zephyr_ws/build/zephyr/zephyr.hex"
 
 {
-  echo "alias teensy41=\"west build -p -b teensy41 -S cdc-acm-console\""
-  echo "alias supermini=\"west build -p -b esp32c3_supermini\""
-  echo "alias flash=\"sudo teensy_loader_cli -mmcu=TEENSY41 -w $ZEPHYR_HEX\""
-  echo "alias monitor=\"sudo minicom -D /dev/ttyACM1 -b 115200\""
+  echo "alias buildTeensy41=\"west build -p -b teensy41 -S cdc-acm-console\""
+  echo "alias buildSupermini=\"west build -p -b esp32c3_supermini\""
+
+  echo "alias flashTeensy=\"sudo teensy_loader_cli -mmcu=TEENSY41 -w $ZEPHYR_HEX\""
+  echo "alias flashSupermini=\"west flash --esp-device /dev/ttyACM0\""
+
+  echo "alias monitorTeensy=\"sudo minicom -D /dev/ttyACM1 -b 115200\""
+  echo "alias monitorSupermini=\"sudo minicom -D /dev/ttyACM0 -b 115200\""
 
   echo "export ZEPHYR_EXTRA_MODULES=/home/$USER/zephyr_ws/corekit"
 } >> /home/$USER/.bashrc

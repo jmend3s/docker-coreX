@@ -3,8 +3,10 @@ FROM debian:bookworm-slim
 ARG USERNAME=jmendes
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ARG WORKDIR=corekit_ws
+ARG WORKDIR=zephyr_ws
 ARG DEBIAN_FRONTEND=noninteractive
+ARG ZEPHYR_VERSION=v4.2.0
+ARG ZEPHYR_SDK_VERSION=0.17.0
 
 # ------------------------------------------------------------------
 # Base packages
@@ -48,16 +50,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ------------------------------------------------------------------
-# Create user
+# User
 # ------------------------------------------------------------------
 
-RUN if getent passwd $USER_UID >/dev/null; then \
-        userdel -r -f $(getent passwd $USER_UID | cut -d: -f1); \
-    fi && \
-    if getent group $USER_GID >/dev/null; then \
-        groupdel $(getent group $USER_GID | cut -d: -f1); \
-    fi && \
-    groupadd --gid $USER_GID $USERNAME && \
+RUN groupadd --gid $USER_GID $USERNAME && \
     useradd \
         --uid $USER_UID \
         --gid $USER_GID \
@@ -72,6 +68,8 @@ RUN echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" \
 USER $USERNAME
 WORKDIR /home/$USERNAME
 
+ENV PATH="/home/$USERNAME/.local/bin:${PATH}"
+
 # ------------------------------------------------------------------
 # Python tools
 # ------------------------------------------------------------------
@@ -80,13 +78,9 @@ RUN pip3 install --break-system-packages --user \
     west \
     pyelftools
 
-ENV PATH="/home/$USERNAME/.local/bin:${PATH}"
-
 # ------------------------------------------------------------------
 # Zephyr SDK
 # ------------------------------------------------------------------
-
-ARG ZEPHYR_SDK_VERSION=0.17.0
 
 RUN cd /tmp && \
     wget -q \
@@ -97,11 +91,10 @@ RUN cd /tmp && \
 
 ENV ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk
 
-# Install SDK toolchains
 RUN /opt/zephyr-sdk/setup.sh -t all -h
 
 # ------------------------------------------------------------------
-# Zephyr 4.2
+# Zephyr
 # ------------------------------------------------------------------
 
 RUN mkdir -p ~/zephyrproject && \
@@ -109,10 +102,17 @@ RUN mkdir -p ~/zephyrproject && \
     west init && \
     cd zephyr && \
     git fetch --tags && \
-    git checkout v4.2.0 && \
+    git checkout ${ZEPHYR_VERSION} && \
     cd .. && \
     west update && \
     west zephyr-export
+
+# ------------------------------------------------------------------
+# Zephyr Python dependencies
+# ------------------------------------------------------------------
+
+RUN pip3 install --break-system-packages --user \
+    -r ~/zephyrproject/zephyr/scripts/requirements.txt
 
 # ------------------------------------------------------------------
 # Environment
